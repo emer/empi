@@ -16,11 +16,6 @@ package empi
 #include "mpi.h"
 
 MPI_Comm     World     = MPI_COMM_WORLD;
-MPI_Datatype INT64     = MPI_LONG;
-MPI_Datatype FLOAT64   = MPI_DOUBLE;
-MPI_Datatype FLOAT32   = MPI_FLOAT;
-MPI_Datatype COMPLEX128 = MPI_DOUBLE_COMPLEX;
-MPI_Status*  StIgnore   = MPI_STATUS_IGNORE;
 */
 import "C"
 
@@ -57,11 +52,25 @@ func Error(ec C.int, ctxt string) error {
 type Op int
 
 const (
-	OpSum  Op = C.int(C.MPI_SUM)
-	OpMax  Op = C.MPI_MAX
-	OpMin  Op = C.MPI_MIN
-	OpProd Op = C.MPI_PROD
+	OpSum Op = iota
+	OpMax
+	OpMin
+	OpProd
 )
+
+func (op Op) ToC() C.MPI_Op {
+	switch op {
+	case OpSum:
+		return C.MPI_SUM
+	case OpMax:
+		return C.MPI_MAX
+	case OpMin:
+		return C.MPI_MIN
+	case OpProd:
+		return C.MPI_PROD
+	}
+	return C.MPI_SUM
+}
 
 const (
 	// Root is the rank 0 node -- it is more semantic to use this
@@ -164,154 +173,4 @@ func (cm *Comm) Abort() error {
 // Barrier forces synchronisation
 func (cm *Comm) Barrier() error {
 	return Error(C.MPI_Barrier(cm.comm), "Barrier")
-}
-
-//////////////////////////////////////////////////////
-//   Send / Recv
-
-// Send64 sends values to proc
-func (cm *Comm) Send64(toProc int, vals []float64) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Send(buf, C.int(len(vals)), C.FLOAT64, C.int(toProc), 10000, cm.comm), "Send64")
-}
-
-// Recv64 receives values from proc fmProc
-func (cm *Comm) Recv64(vals []float64, fmProc int) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.FLOAT64, C.int(fmProc), 10000, cm.comm, C.StIgnore), "Recv64")
-}
-
-// Send32 sends values to proc
-func (cm *Comm) Send32(toProc int, vals []float32) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Send(buf, C.int(len(vals)), C.FLOAT32, C.int(toProc), 10000, cm.comm), "Send32")
-}
-
-// Recv32 receives values from proc fmProc
-func (cm *Comm) Recv32(vals []float32, fmProc int) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.FLOAT32, C.int(fmProc), 10000, cm.comm, C.StIgnore), "Recv32")
-}
-
-// SendC128 sends values to proc toProc
-func (cm *Comm) SendC128(vals []complex128, toProc int) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Send(buf, C.int(len(vals)), C.COMPLEX128, C.int(toProc), 10001, cm.comm), "SendC128")
-}
-
-// RecvC128 receives values from proc fmProc
-func (cm *Comm) RecvC128(vals []complex128, fmProc int) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.COMPLEX128, C.int(fmProc), 10001, cm.comm, C.StIgnore), "RecvC128")
-}
-
-// SendI64 sends values to proc toProc
-func (cm *Comm) SendI64(vals []int, toProc int) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Send(buf, C.int(len(vals)), C.INT64, C.int(toProc), 10002, cm.comm), "SendI64")
-}
-
-// RecvI64 receives values from proc fmProc
-func (cm *Comm) RecvI64(vals []int, fmProc int) error {
-	buf := unsafe.Pointer(&vals[0])
-	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.INT64, C.int(fmProc), 10002, cm.comm, C.StIgnore), "RecvI64")
-}
-
-//////////////////////////////////////////////////////
-//   Bcast
-
-// BcastFrom64 broadcasts float64 slice from given proc to all other procs
-func (cm *Comm) BcastFrom64(from int, x []float64) error {
-	buf := unsafe.Pointer(&x[0])
-	return Error(C.MPI_Bcast(buf, C.int(len(x)), C.FLOAT64, from, cm.comm), "Bcast64")
-}
-
-// BcastFrom32 broadcasts float32 slice from given proc to all other procs
-func (cm *Comm) BcastFrom32(from int, x []float32) error {
-	buf := unsafe.Pointer(&x[0])
-	return Error(C.MPI_Bcast(buf, C.int(len(x)), C.FLOAT32, C.int(from), cm.comm), "Bcast32")
-}
-
-// BcastFromC128 broadcasts complex128 slice from given proc to all other procs
-func (cm *Comm) BcastFromC128(from int, x []complex128) error {
-	buf := unsafe.Pointer(&x[0])
-	return Error(C.MPI_Bcast(buf, C.int(len(x)), C.COMPLEX128, C.int(from), cm.comm), "BcastC128")
-}
-
-//////////////////////////////////////////////////////
-//   Reduce
-
-// Reduce64 reduces all values in 'orig' to 'dest' in given proc
-// using given operation.
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) Reduce64(toProc int, op Op, dest, orig []float64) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT64, C.MPI_Op(C.int(op)), C.int(toProc), cm.comm), "Reduce64")
-}
-
-// Reduce32 reduces all values in 'orig' to 'dest' in given proc
-// using given operation.
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) Reduce32(toProc int, op Op, dest, orig []float32) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT32, C.MPI_Op(op), C.int(toProc), cm.comm), "Reduce32")
-}
-
-// ReduceC128 reduces all values in 'orig' to 'dest' in given proc
-// using given operation.
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) ReduceC128(toProc int, op Op, dest, orig []complex128) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX128, C.MPI_Op(op), C.int(toProc), cm.comm), "ReduceC128")
-}
-
-// ReduceI64 reduces all values in 'orig' to 'dest' in given proc
-// using given operation.  I64 assumes 64bit int value
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, C.MPI_Op(op), C.int(toProc), cm.comm), "ReduceI64")
-}
-
-//////////////////////////////////////////////////////
-//   Allreduce
-
-// AllReduce64 combines all values on all procs from orig into dest
-// using given operation.
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduce64(op Op, dest, orig []float64) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT64, C.MPI_Op(op), cm.comm), "AllReduce64")
-}
-
-// AllReduce32 combines all values on all procs from orig into dest
-// using given operation.
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduce32(op Op, dest, orig []float32) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT32, C.MPI_Op(op), cm.comm), "AllReduce32")
-}
-
-// AllReduceC128 combines all values on all procs from orig into dest
-// using given operation.
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduceC128(op Op, dest, orig []complex128) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX128, C.MPI_Op(op), cm.comm), "AllReduceC128")
-}
-
-// AllReduceI64 combines all values on all procs from orig into dest
-// using given operation.  I64 assumes 64bit int value
-// IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduceI64(op Op, dest, orig []int) error {
-	sendbuf := unsafe.Pointer(&orig[0])
-	recvbuf := unsafe.Pointer(&dest[0])
-	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, C.MPI_Op(op), cm.comm), "AllReduceI64")
 }

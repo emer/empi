@@ -9,8 +9,11 @@ data sharing across a collection of processors (procs).
 It also contains some useful abstractions and error logging support in Go
 on top of the basic MPI_* calls invoked through cgo.
 
-The wrapping code was copied directly from https://github.com/cpmech/gosl/mpi
-we needed to change a few things (including support for float32)
-and generally have this modifiable by users in case of any linking path issues.
+The wrapping code was initially copied  from https://github.com/cpmech/gosl/mpi
+and significantly modified.
+
+All standard Go types are supported using the apache arrow tmpl generation tool.
+Int is assumed to be 64bit and is defined as a []int because that is typically
+more convenient.
 */
 package empi
