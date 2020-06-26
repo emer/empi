@@ -7,9 +7,9 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-// +build !windows
+// +build mpi
 
-package empi
+package mpi
 
 /*
 #cgo pkg-config: ompi
@@ -108,15 +108,23 @@ func Finalize() {
 	C.MPI_Finalize()
 }
 
-// WorldRank returns this proc's rank/ID within the World communicator
+// WorldRank returns this proc's rank/ID within the World communicator.
+// Returns 0 if not yet initialized, so it is always safe to call.
 func WorldRank() (rank int) {
+	if !IsOn() {
+		return 0
+	}
 	var r int32
 	C.MPI_Comm_rank(C.World, (*C.int)(unsafe.Pointer(&r)))
 	return int(r)
 }
 
-// WorldSize returns the number of procs in the World communicator
+// WorldSize returns the number of procs in the World communicator.
+// Returns 1 if not yet initialized, so it is always safe to call.
 func WorldSize() (size int) {
+	if !IsOn() {
+		return 1
+	}
 	var s int32
 	C.MPI_Comm_size(C.World, (*C.int)(unsafe.Pointer(&s)))
 	return int(s)
