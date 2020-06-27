@@ -11,5 +11,10 @@ You must set the `mpi` build tag to actually have it build using the mpi library
 $ go build -tags mpi
 ```
 
-The `empi/empi` package has methods to support use of MPI in emergent simulations.
+The `empi/empi` package has methods to support use of MPI in emergent simulations:
+
+* Gathering `etable.Table` and `etensor.Tensor` data across processors.
+
+* A version of env.FixedTable that divides rows of table across MPI processors.
+
 
