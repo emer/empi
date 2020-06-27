@@ -38,6 +38,27 @@ func (cm *Comm) AllReduceF64(op Op, dest, orig []float64) error {
 	return nil
 }
 
+// GatherF64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherF64(toProc int, dest, orig []float64) error {
+	return nil
+}
+
+// AllGatherF64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherF64(dest, orig []float64) error {
+	return nil
+}
+
+// ScatterF64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterF64(fmProc int, dest, orig []float64) error {
+	return nil
+}
+
 // SendF32 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendF32(toProc int, tag int, vals []float32) error {
@@ -68,33 +89,126 @@ func (cm *Comm) AllReduceF32(op Op, dest, orig []float32) error {
 	return nil
 }
 
+// GatherF32 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherF32(toProc int, dest, orig []float32) error {
+	return nil
+}
+
+// AllGatherF32 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherF32(dest, orig []float32) error {
+	return nil
+}
+
+// ScatterF32 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterF32(fmProc int, dest, orig []float32) error {
+	return nil
+}
+
+// SendInt sends values to toProc, using given unique tag identifier.
+// This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
+func (cm *Comm) SendInt(toProc int, tag int, vals []int) error {
+	return nil
+}
+
+// Recv64Int receives values from proc fmProc, using given unique tag identifier
+// This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
+func (cm *Comm) RecvInt(fmProc int, tag int, vals []int) error {
+	return nil
+}
+
+// BcastInt broadcasts slice from fmProc to all other procs.
+// All nodes have the same vals after this call, copied from fmProc.
+func (cm *Comm) BcastInt(fmProc int, vals []int) error {
+	return nil
+}
+
+// ReduceInt reduces all values across procs to toProc in orig to dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ReduceInt(toProc int, op Op, dest, orig []int) error {
+	return nil
+}
+
+// AllReduceInt reduces all values across procs to all procs from orig into dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllReduceInt(op Op, dest, orig []int) error {
+	return nil
+}
+
+// GatherInt gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherInt(toProc int, dest, orig []int) error {
+	return nil
+}
+
+// AllGatherInt gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherInt(dest, orig []int) error {
+	return nil
+}
+
+// ScatterInt scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterInt(fmProc int, dest, orig []int) error {
+	return nil
+}
+
 // SendI64 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
-func (cm *Comm) SendI64(toProc int, tag int, vals []int) error {
+func (cm *Comm) SendI64(toProc int, tag int, vals []int64) error {
 	return nil
 }
 
 // Recv64I64 receives values from proc fmProc, using given unique tag identifier
 // This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
-func (cm *Comm) RecvI64(fmProc int, tag int, vals []int) error {
+func (cm *Comm) RecvI64(fmProc int, tag int, vals []int64) error {
 	return nil
 }
 
 // BcastI64 broadcasts slice from fmProc to all other procs.
 // All nodes have the same vals after this call, copied from fmProc.
-func (cm *Comm) BcastI64(fmProc int, vals []int) error {
+func (cm *Comm) BcastI64(fmProc int, vals []int64) error {
 	return nil
 }
 
 // ReduceI64 reduces all values across procs to toProc in orig to dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int) error {
+func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int64) error {
 	return nil
 }
 
 // AllReduceI64 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduceI64(op Op, dest, orig []int) error {
+func (cm *Comm) AllReduceI64(op Op, dest, orig []int64) error {
+	return nil
+}
+
+// GatherI64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI64(toProc int, dest, orig []int64) error {
+	return nil
+}
+
+// AllGatherI64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI64(dest, orig []int64) error {
+	return nil
+}
+
+// ScatterI64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI64(fmProc int, dest, orig []int64) error {
 	return nil
 }
 
@@ -128,6 +242,27 @@ func (cm *Comm) AllReduceU64(op Op, dest, orig []uint64) error {
 	return nil
 }
 
+// GatherU64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU64(toProc int, dest, orig []uint64) error {
+	return nil
+}
+
+// AllGatherU64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU64(dest, orig []uint64) error {
+	return nil
+}
+
+// ScatterU64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU64(fmProc int, dest, orig []uint64) error {
+	return nil
+}
+
 // SendI32 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendI32(toProc int, tag int, vals []int32) error {
@@ -155,6 +290,27 @@ func (cm *Comm) ReduceI32(toProc int, op Op, dest, orig []int32) error {
 // AllReduceI32 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) AllReduceI32(op Op, dest, orig []int32) error {
+	return nil
+}
+
+// GatherI32 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI32(toProc int, dest, orig []int32) error {
+	return nil
+}
+
+// AllGatherI32 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI32(dest, orig []int32) error {
+	return nil
+}
+
+// ScatterI32 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI32(fmProc int, dest, orig []int32) error {
 	return nil
 }
 
@@ -188,6 +344,27 @@ func (cm *Comm) AllReduceU32(op Op, dest, orig []uint32) error {
 	return nil
 }
 
+// GatherU32 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU32(toProc int, dest, orig []uint32) error {
+	return nil
+}
+
+// AllGatherU32 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU32(dest, orig []uint32) error {
+	return nil
+}
+
+// ScatterU32 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU32(fmProc int, dest, orig []uint32) error {
+	return nil
+}
+
 // SendI16 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendI16(toProc int, tag int, vals []int16) error {
@@ -215,6 +392,27 @@ func (cm *Comm) ReduceI16(toProc int, op Op, dest, orig []int16) error {
 // AllReduceI16 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) AllReduceI16(op Op, dest, orig []int16) error {
+	return nil
+}
+
+// GatherI16 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI16(toProc int, dest, orig []int16) error {
+	return nil
+}
+
+// AllGatherI16 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI16(dest, orig []int16) error {
+	return nil
+}
+
+// ScatterI16 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI16(fmProc int, dest, orig []int16) error {
 	return nil
 }
 
@@ -248,33 +446,126 @@ func (cm *Comm) AllReduceU16(op Op, dest, orig []uint16) error {
 	return nil
 }
 
+// GatherU16 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU16(toProc int, dest, orig []uint16) error {
+	return nil
+}
+
+// AllGatherU16 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU16(dest, orig []uint16) error {
+	return nil
+}
+
+// ScatterU16 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU16(fmProc int, dest, orig []uint16) error {
+	return nil
+}
+
 // SendI8 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
-func (cm *Comm) SendI8(toProc int, tag int, vals []byte) error {
+func (cm *Comm) SendI8(toProc int, tag int, vals []int8) error {
 	return nil
 }
 
 // Recv64I8 receives values from proc fmProc, using given unique tag identifier
 // This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
-func (cm *Comm) RecvI8(fmProc int, tag int, vals []byte) error {
+func (cm *Comm) RecvI8(fmProc int, tag int, vals []int8) error {
 	return nil
 }
 
 // BcastI8 broadcasts slice from fmProc to all other procs.
 // All nodes have the same vals after this call, copied from fmProc.
-func (cm *Comm) BcastI8(fmProc int, vals []byte) error {
+func (cm *Comm) BcastI8(fmProc int, vals []int8) error {
 	return nil
 }
 
 // ReduceI8 reduces all values across procs to toProc in orig to dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) ReduceI8(toProc int, op Op, dest, orig []byte) error {
+func (cm *Comm) ReduceI8(toProc int, op Op, dest, orig []int8) error {
 	return nil
 }
 
 // AllReduceI8 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduceI8(op Op, dest, orig []byte) error {
+func (cm *Comm) AllReduceI8(op Op, dest, orig []int8) error {
+	return nil
+}
+
+// GatherI8 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI8(toProc int, dest, orig []int8) error {
+	return nil
+}
+
+// AllGatherI8 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI8(dest, orig []int8) error {
+	return nil
+}
+
+// ScatterI8 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI8(fmProc int, dest, orig []int8) error {
+	return nil
+}
+
+// SendU8 sends values to toProc, using given unique tag identifier.
+// This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
+func (cm *Comm) SendU8(toProc int, tag int, vals []uint8) error {
+	return nil
+}
+
+// Recv64U8 receives values from proc fmProc, using given unique tag identifier
+// This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
+func (cm *Comm) RecvU8(fmProc int, tag int, vals []uint8) error {
+	return nil
+}
+
+// BcastU8 broadcasts slice from fmProc to all other procs.
+// All nodes have the same vals after this call, copied from fmProc.
+func (cm *Comm) BcastU8(fmProc int, vals []uint8) error {
+	return nil
+}
+
+// ReduceU8 reduces all values across procs to toProc in orig to dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ReduceU8(toProc int, op Op, dest, orig []uint8) error {
+	return nil
+}
+
+// AllReduceU8 reduces all values across procs to all procs from orig into dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllReduceU8(op Op, dest, orig []uint8) error {
+	return nil
+}
+
+// GatherU8 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU8(toProc int, dest, orig []uint8) error {
+	return nil
+}
+
+// AllGatherU8 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU8(dest, orig []uint8) error {
+	return nil
+}
+
+// ScatterU8 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU8(fmProc int, dest, orig []uint8) error {
 	return nil
 }
 
@@ -308,6 +599,27 @@ func (cm *Comm) AllReduceC128(op Op, dest, orig []complex128) error {
 	return nil
 }
 
+// GatherC128 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherC128(toProc int, dest, orig []complex128) error {
+	return nil
+}
+
+// AllGatherC128 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherC128(dest, orig []complex128) error {
+	return nil
+}
+
+// ScatterC128 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterC128(fmProc int, dest, orig []complex128) error {
+	return nil
+}
+
 // SendC64 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendC64(toProc int, tag int, vals []complex64) error {
@@ -335,5 +647,26 @@ func (cm *Comm) ReduceC64(toProc int, op Op, dest, orig []complex64) error {
 // AllReduceC64 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) AllReduceC64(op Op, dest, orig []complex64) error {
+	return nil
+}
+
+// GatherC64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherC64(toProc int, dest, orig []complex64) error {
+	return nil
+}
+
+// AllGatherC64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherC64(dest, orig []complex64) error {
+	return nil
+}
+
+// ScatterC64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterC64(fmProc int, dest, orig []complex64) error {
 	return nil
 }

@@ -14,8 +14,15 @@
     "Size": "4"
   },
   {
-    "Name": "I64",
+    "Name": "Int",
     "Type": "int",
+    "CType": "INT64",
+    "Default": "0",
+    "Size": "8"
+  },
+  {
+    "Name": "I64",
+    "Type": "int64",
     "CType": "INT64",
     "Default": "0",
     "Size": "8"
@@ -57,7 +64,14 @@
   },
   {
     "Name": "I8",
-    "Type": "byte",
+    "Type": "int8",
+    "CType": "BYTE",
+    "Default": "0",
+    "Size": "1"
+  },
+  {
+    "Name": "U8",
+    "Type": "uint8",
     "CType": "BYTE",
     "Default": "0",
     "Size": "1"

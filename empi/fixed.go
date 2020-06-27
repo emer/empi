@@ -1,4 +1,4 @@
-// Copyright (c) 2019, The Emergent Authors. All rights reserved.
+// Copyright (c) 2020, The Emergent Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
@@ -128,6 +128,7 @@ func (ft *FixedTable) Step() bool {
 	ft.Epoch.Same() // good idea to just reset all non-inner-most counters at start
 
 	if ft.Trial.Incr() { // if true, hit max, reset to 0
+		ft.Trial.Cur = ft.TrialSt // key to reset always to start
 		ft.PermuteOrder()
 		ft.Epoch.Incr()
 	}

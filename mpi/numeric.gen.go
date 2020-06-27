@@ -68,6 +68,33 @@ func (cm *Comm) AllReduceF64(op Op, dest, orig []float64) error {
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT64, op.ToC(), cm.comm), "AllReduceF64")
 }
 
+// GatherF64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherF64(toProc int, dest, orig []float64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.FLOAT64, recvbuf, C.int(len(orig)), C.FLOAT64, C.int(toProc), cm.comm), "GatherF64")
+}
+
+// AllGatherF64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherF64(dest, orig []float64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.FLOAT64, recvbuf, C.int(len(orig)), C.FLOAT64, cm.comm), "GatherF64")
+}
+
+// ScatterF64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterF64(fmProc int, dest, orig []float64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.FLOAT64, recvbuf, C.int(len(dest)), C.FLOAT64, C.int(fmProc), cm.comm), "GatherF64")
+}
+
 // SendF32 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendF32(toProc int, tag int, vals []float32) error {
@@ -105,30 +132,121 @@ func (cm *Comm) AllReduceF32(op Op, dest, orig []float32) error {
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT32, op.ToC(), cm.comm), "AllReduceF32")
 }
 
+// GatherF32 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherF32(toProc int, dest, orig []float32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.FLOAT32, recvbuf, C.int(len(orig)), C.FLOAT32, C.int(toProc), cm.comm), "GatherF32")
+}
+
+// AllGatherF32 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherF32(dest, orig []float32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.FLOAT32, recvbuf, C.int(len(orig)), C.FLOAT32, cm.comm), "GatherF32")
+}
+
+// ScatterF32 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterF32(fmProc int, dest, orig []float32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.FLOAT32, recvbuf, C.int(len(dest)), C.FLOAT32, C.int(fmProc), cm.comm), "GatherF32")
+}
+
+// SendInt sends values to toProc, using given unique tag identifier.
+// This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
+func (cm *Comm) SendInt(toProc int, tag int, vals []int) error {
+	buf := unsafe.Pointer(&vals[0])
+	return Error(C.MPI_Send(buf, C.int(len(vals)), C.INT64, C.int(toProc), C.int(tag), cm.comm), "SendInt")
+}
+
+// Recv64Int receives values from proc fmProc, using given unique tag identifier
+// This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
+func (cm *Comm) RecvInt(fmProc int, tag int, vals []int) error {
+	buf := unsafe.Pointer(&vals[0])
+	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.INT64, C.int(fmProc), C.int(tag), cm.comm, C.StIgnore), "RecvInt")
+}
+
+// BcastInt broadcasts slice from fmProc to all other procs.
+// All nodes have the same vals after this call, copied from fmProc.
+func (cm *Comm) BcastInt(fmProc int, vals []int) error {
+	buf := unsafe.Pointer(&vals[0])
+	return Error(C.MPI_Bcast(buf, C.int(len(vals)), C.INT64, C.int(fmProc), cm.comm), "BcastInt")
+}
+
+// ReduceInt reduces all values across procs to toProc in orig to dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ReduceInt(toProc int, op Op, dest, orig []int) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), C.int(toProc), cm.comm), "ReduceInt")
+}
+
+// AllReduceInt reduces all values across procs to all procs from orig into dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllReduceInt(op Op, dest, orig []int) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), cm.comm), "AllReduceInt")
+}
+
+// GatherInt gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherInt(toProc int, dest, orig []int) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT64, recvbuf, C.int(len(orig)), C.INT64, C.int(toProc), cm.comm), "GatherInt")
+}
+
+// AllGatherInt gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherInt(dest, orig []int) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.INT64, recvbuf, C.int(len(orig)), C.INT64, cm.comm), "GatherInt")
+}
+
+// ScatterInt scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterInt(fmProc int, dest, orig []int) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT64, recvbuf, C.int(len(dest)), C.INT64, C.int(fmProc), cm.comm), "GatherInt")
+}
+
 // SendI64 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
-func (cm *Comm) SendI64(toProc int, tag int, vals []int) error {
+func (cm *Comm) SendI64(toProc int, tag int, vals []int64) error {
 	buf := unsafe.Pointer(&vals[0])
 	return Error(C.MPI_Send(buf, C.int(len(vals)), C.INT64, C.int(toProc), C.int(tag), cm.comm), "SendI64")
 }
 
 // Recv64I64 receives values from proc fmProc, using given unique tag identifier
 // This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
-func (cm *Comm) RecvI64(fmProc int, tag int, vals []int) error {
+func (cm *Comm) RecvI64(fmProc int, tag int, vals []int64) error {
 	buf := unsafe.Pointer(&vals[0])
 	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.INT64, C.int(fmProc), C.int(tag), cm.comm, C.StIgnore), "RecvI64")
 }
 
 // BcastI64 broadcasts slice from fmProc to all other procs.
 // All nodes have the same vals after this call, copied from fmProc.
-func (cm *Comm) BcastI64(fmProc int, vals []int) error {
+func (cm *Comm) BcastI64(fmProc int, vals []int64) error {
 	buf := unsafe.Pointer(&vals[0])
 	return Error(C.MPI_Bcast(buf, C.int(len(vals)), C.INT64, C.int(fmProc), cm.comm), "BcastI64")
 }
 
 // ReduceI64 reduces all values across procs to toProc in orig to dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int) error {
+func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), C.int(toProc), cm.comm), "ReduceI64")
@@ -136,10 +254,37 @@ func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int) error {
 
 // AllReduceI64 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduceI64(op Op, dest, orig []int) error {
+func (cm *Comm) AllReduceI64(op Op, dest, orig []int64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), cm.comm), "AllReduceI64")
+}
+
+// GatherI64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI64(toProc int, dest, orig []int64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT64, recvbuf, C.int(len(orig)), C.INT64, C.int(toProc), cm.comm), "GatherI64")
+}
+
+// AllGatherI64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI64(dest, orig []int64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.INT64, recvbuf, C.int(len(orig)), C.INT64, cm.comm), "GatherI64")
+}
+
+// ScatterI64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI64(fmProc int, dest, orig []int64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT64, recvbuf, C.int(len(dest)), C.INT64, C.int(fmProc), cm.comm), "GatherI64")
 }
 
 // SendU64 sends values to toProc, using given unique tag identifier.
@@ -179,6 +324,33 @@ func (cm *Comm) AllReduceU64(op Op, dest, orig []uint64) error {
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT64, op.ToC(), cm.comm), "AllReduceU64")
 }
 
+// GatherU64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU64(toProc int, dest, orig []uint64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.UINT64, recvbuf, C.int(len(orig)), C.UINT64, C.int(toProc), cm.comm), "GatherU64")
+}
+
+// AllGatherU64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU64(dest, orig []uint64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.UINT64, recvbuf, C.int(len(orig)), C.UINT64, cm.comm), "GatherU64")
+}
+
+// ScatterU64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU64(fmProc int, dest, orig []uint64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.UINT64, recvbuf, C.int(len(dest)), C.UINT64, C.int(fmProc), cm.comm), "GatherU64")
+}
+
 // SendI32 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendI32(toProc int, tag int, vals []int32) error {
@@ -214,6 +386,33 @@ func (cm *Comm) AllReduceI32(op Op, dest, orig []int32) error {
 	sendbuf := unsafe.Pointer(&orig[0])
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT32, op.ToC(), cm.comm), "AllReduceI32")
+}
+
+// GatherI32 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI32(toProc int, dest, orig []int32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT32, recvbuf, C.int(len(orig)), C.INT32, C.int(toProc), cm.comm), "GatherI32")
+}
+
+// AllGatherI32 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI32(dest, orig []int32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.INT32, recvbuf, C.int(len(orig)), C.INT32, cm.comm), "GatherI32")
+}
+
+// ScatterI32 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI32(fmProc int, dest, orig []int32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT32, recvbuf, C.int(len(dest)), C.INT32, C.int(fmProc), cm.comm), "GatherI32")
 }
 
 // SendU32 sends values to toProc, using given unique tag identifier.
@@ -253,6 +452,33 @@ func (cm *Comm) AllReduceU32(op Op, dest, orig []uint32) error {
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT32, op.ToC(), cm.comm), "AllReduceU32")
 }
 
+// GatherU32 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU32(toProc int, dest, orig []uint32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.UINT32, recvbuf, C.int(len(orig)), C.UINT32, C.int(toProc), cm.comm), "GatherU32")
+}
+
+// AllGatherU32 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU32(dest, orig []uint32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.UINT32, recvbuf, C.int(len(orig)), C.UINT32, cm.comm), "GatherU32")
+}
+
+// ScatterU32 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU32(fmProc int, dest, orig []uint32) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.UINT32, recvbuf, C.int(len(dest)), C.UINT32, C.int(fmProc), cm.comm), "GatherU32")
+}
+
 // SendI16 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendI16(toProc int, tag int, vals []int16) error {
@@ -288,6 +514,33 @@ func (cm *Comm) AllReduceI16(op Op, dest, orig []int16) error {
 	sendbuf := unsafe.Pointer(&orig[0])
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT16, op.ToC(), cm.comm), "AllReduceI16")
+}
+
+// GatherI16 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI16(toProc int, dest, orig []int16) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT16, recvbuf, C.int(len(orig)), C.INT16, C.int(toProc), cm.comm), "GatherI16")
+}
+
+// AllGatherI16 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI16(dest, orig []int16) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.INT16, recvbuf, C.int(len(orig)), C.INT16, cm.comm), "GatherI16")
+}
+
+// ScatterI16 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI16(fmProc int, dest, orig []int16) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT16, recvbuf, C.int(len(dest)), C.INT16, C.int(fmProc), cm.comm), "GatherI16")
 }
 
 // SendU16 sends values to toProc, using given unique tag identifier.
@@ -327,30 +580,57 @@ func (cm *Comm) AllReduceU16(op Op, dest, orig []uint16) error {
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT16, op.ToC(), cm.comm), "AllReduceU16")
 }
 
+// GatherU16 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU16(toProc int, dest, orig []uint16) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.UINT16, recvbuf, C.int(len(orig)), C.UINT16, C.int(toProc), cm.comm), "GatherU16")
+}
+
+// AllGatherU16 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU16(dest, orig []uint16) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.UINT16, recvbuf, C.int(len(orig)), C.UINT16, cm.comm), "GatherU16")
+}
+
+// ScatterU16 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU16(fmProc int, dest, orig []uint16) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.UINT16, recvbuf, C.int(len(dest)), C.UINT16, C.int(fmProc), cm.comm), "GatherU16")
+}
+
 // SendI8 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
-func (cm *Comm) SendI8(toProc int, tag int, vals []byte) error {
+func (cm *Comm) SendI8(toProc int, tag int, vals []int8) error {
 	buf := unsafe.Pointer(&vals[0])
 	return Error(C.MPI_Send(buf, C.int(len(vals)), C.BYTE, C.int(toProc), C.int(tag), cm.comm), "SendI8")
 }
 
 // Recv64I8 receives values from proc fmProc, using given unique tag identifier
 // This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
-func (cm *Comm) RecvI8(fmProc int, tag int, vals []byte) error {
+func (cm *Comm) RecvI8(fmProc int, tag int, vals []int8) error {
 	buf := unsafe.Pointer(&vals[0])
 	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.BYTE, C.int(fmProc), C.int(tag), cm.comm, C.StIgnore), "RecvI8")
 }
 
 // BcastI8 broadcasts slice from fmProc to all other procs.
 // All nodes have the same vals after this call, copied from fmProc.
-func (cm *Comm) BcastI8(fmProc int, vals []byte) error {
+func (cm *Comm) BcastI8(fmProc int, vals []int8) error {
 	buf := unsafe.Pointer(&vals[0])
 	return Error(C.MPI_Bcast(buf, C.int(len(vals)), C.BYTE, C.int(fmProc), cm.comm), "BcastI8")
 }
 
 // ReduceI8 reduces all values across procs to toProc in orig to dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) ReduceI8(toProc int, op Op, dest, orig []byte) error {
+func (cm *Comm) ReduceI8(toProc int, op Op, dest, orig []int8) error {
 	sendbuf := unsafe.Pointer(&orig[0])
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), C.int(toProc), cm.comm), "ReduceI8")
@@ -358,10 +638,101 @@ func (cm *Comm) ReduceI8(toProc int, op Op, dest, orig []byte) error {
 
 // AllReduceI8 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
-func (cm *Comm) AllReduceI8(op Op, dest, orig []byte) error {
+func (cm *Comm) AllReduceI8(op Op, dest, orig []int8) error {
 	sendbuf := unsafe.Pointer(&orig[0])
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), cm.comm), "AllReduceI8")
+}
+
+// GatherI8 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherI8(toProc int, dest, orig []int8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.BYTE, recvbuf, C.int(len(orig)), C.BYTE, C.int(toProc), cm.comm), "GatherI8")
+}
+
+// AllGatherI8 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherI8(dest, orig []int8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.BYTE, recvbuf, C.int(len(orig)), C.BYTE, cm.comm), "GatherI8")
+}
+
+// ScatterI8 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterI8(fmProc int, dest, orig []int8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.BYTE, recvbuf, C.int(len(dest)), C.BYTE, C.int(fmProc), cm.comm), "GatherI8")
+}
+
+// SendU8 sends values to toProc, using given unique tag identifier.
+// This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
+func (cm *Comm) SendU8(toProc int, tag int, vals []uint8) error {
+	buf := unsafe.Pointer(&vals[0])
+	return Error(C.MPI_Send(buf, C.int(len(vals)), C.BYTE, C.int(toProc), C.int(tag), cm.comm), "SendU8")
+}
+
+// Recv64U8 receives values from proc fmProc, using given unique tag identifier
+// This is Blocking. Must have a corresponding Send call with same tag on fmProc, to this proc
+func (cm *Comm) RecvU8(fmProc int, tag int, vals []uint8) error {
+	buf := unsafe.Pointer(&vals[0])
+	return Error(C.MPI_Recv(buf, C.int(len(vals)), C.BYTE, C.int(fmProc), C.int(tag), cm.comm, C.StIgnore), "RecvU8")
+}
+
+// BcastU8 broadcasts slice from fmProc to all other procs.
+// All nodes have the same vals after this call, copied from fmProc.
+func (cm *Comm) BcastU8(fmProc int, vals []uint8) error {
+	buf := unsafe.Pointer(&vals[0])
+	return Error(C.MPI_Bcast(buf, C.int(len(vals)), C.BYTE, C.int(fmProc), cm.comm), "BcastU8")
+}
+
+// ReduceU8 reduces all values across procs to toProc in orig to dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ReduceU8(toProc int, op Op, dest, orig []uint8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), C.int(toProc), cm.comm), "ReduceU8")
+}
+
+// AllReduceU8 reduces all values across procs to all procs from orig into dest using given operation.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllReduceU8(op Op, dest, orig []uint8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), cm.comm), "AllReduceU8")
+}
+
+// GatherU8 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherU8(toProc int, dest, orig []uint8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.BYTE, recvbuf, C.int(len(orig)), C.BYTE, C.int(toProc), cm.comm), "GatherU8")
+}
+
+// AllGatherU8 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherU8(dest, orig []uint8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.BYTE, recvbuf, C.int(len(orig)), C.BYTE, cm.comm), "GatherU8")
+}
+
+// ScatterU8 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterU8(fmProc int, dest, orig []uint8) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.BYTE, recvbuf, C.int(len(dest)), C.BYTE, C.int(fmProc), cm.comm), "GatherU8")
 }
 
 // SendC128 sends values to toProc, using given unique tag identifier.
@@ -401,6 +772,33 @@ func (cm *Comm) AllReduceC128(op Op, dest, orig []complex128) error {
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX128, op.ToC(), cm.comm), "AllReduceC128")
 }
 
+// GatherC128 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherC128(toProc int, dest, orig []complex128) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.COMPLEX128, recvbuf, C.int(len(orig)), C.COMPLEX128, C.int(toProc), cm.comm), "GatherC128")
+}
+
+// AllGatherC128 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherC128(dest, orig []complex128) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.COMPLEX128, recvbuf, C.int(len(orig)), C.COMPLEX128, cm.comm), "GatherC128")
+}
+
+// ScatterC128 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterC128(fmProc int, dest, orig []complex128) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.COMPLEX128, recvbuf, C.int(len(dest)), C.COMPLEX128, C.int(fmProc), cm.comm), "GatherC128")
+}
+
 // SendC64 sends values to toProc, using given unique tag identifier.
 // This is Blocking. Must have a corresponding Recv call with same tag on toProc, from this proc
 func (cm *Comm) SendC64(toProc int, tag int, vals []complex64) error {
@@ -436,4 +834,31 @@ func (cm *Comm) AllReduceC64(op Op, dest, orig []complex64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX64, op.ToC(), cm.comm), "AllReduceC64")
+}
+
+// GatherC64 gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) GatherC64(toProc int, dest, orig []complex64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.COMPLEX64, recvbuf, C.int(len(orig)), C.COMPLEX64, C.int(toProc), cm.comm), "GatherC64")
+}
+
+// AllGatherC64 gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGatherC64(dest, orig []complex64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.COMPLEX64, recvbuf, C.int(len(orig)), C.COMPLEX64, cm.comm), "GatherC64")
+}
+
+// ScatterC64 scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) ScatterC64(fmProc int, dest, orig []complex64) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.COMPLEX64, recvbuf, C.int(len(dest)), C.COMPLEX64, C.int(fmProc), cm.comm), "GatherC64")
 }

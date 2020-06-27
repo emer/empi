@@ -44,6 +44,26 @@ func (cm *Comm) AllReduce{{.Name}}(op Op, dest, orig []{{or .Type}}) error {
 	return nil
 }
 
+// Gather{{.Name}} gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) Gather{{.Name}}(toProc int, dest, orig []{{or .Type}}) error {
+	return nil
+}
+
+// AllGather{{.Name}} gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGather{{.Name}}(dest, orig []{{or .Type}}) error {
+	return nil
+}
+
+// Scatter{{.Name}} scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) Scatter{{.Name}}(fmProc int, dest, orig []{{or .Type}}) error {
+	return nil
+}
 
 {{- end}}
 

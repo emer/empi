@@ -70,6 +70,33 @@ func (cm *Comm) AllReduce{{.Name}}(op Op, dest, orig []{{or .Type}}) error {
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.{{or .CType}}, op.ToC(), cm.comm), "AllReduce{{.Name}}")
 }
 
+// Gather{{.Name}} gathers values from all procs into toProc proc, tiled into dest of size np * len(orig).
+// This is inverse of Scatter.
+// IMPORTANT: orig and dest must be different slices.
+func (cm *Comm) Gather{{.Name}}(toProc int, dest, orig []{{or .Type}}) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.{{or .CType}}, recvbuf, C.int(len(orig)), C.{{or .CType}}, C.int(toProc), cm.comm), "Gather{{.Name}}")
+}
+
+// AllGather{{.Name}} gathers values from all procs into all procs,
+// tiled by proc into dest of size np * len(orig).
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) AllGather{{.Name}}(dest, orig []{{or .Type}}) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Allgather(sendbuf, C.int(len(orig)), C.{{or .CType}}, recvbuf, C.int(len(orig)), C.{{or .CType}}, cm.comm), "Gather{{.Name}}")
+}
+
+// Scatter{{.Name}} scatters values from fmProc to all procs, distributing len(dest) size chunks to
+// each proc from orig slice, which must be of size np * len(dest).  This is inverse of Gather.
+// IMPORTANT: orig and dest must be different slices
+func (cm *Comm) Scatter{{.Name}}(fmProc int, dest, orig []{{or .Type}}) error {
+	sendbuf := unsafe.Pointer(&orig[0])
+	recvbuf := unsafe.Pointer(&dest[0])
+	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.{{or .CType}}, recvbuf, C.int(len(dest)), C.{{or .CType}}, C.int(fmProc), cm.comm), "Gather{{.Name}}")
+}
+
 
 {{- end}}
 

@@ -6,10 +6,23 @@ package mpi
 
 import "fmt"
 
-// Printf does fmt.Printf only on the 0 rank node
+// PrintAllProcs causes mpi.Printf to print on all processors -- otherwise just 0
+var PrintAllProcs = false
+
+// Printf does fmt.Printf only on the 0 rank node (though see PrintAllProcs to do all)
 func Printf(fs string, pars ...interface{}) {
-	if WorldRank() != 0 {
+	if !PrintAllProcs && WorldRank() > 0 {
 		return
 	}
+	if WorldRank() > 0 {
+		fs = fmt.Sprintf("P%d: ", WorldRank()) + fs
+	}
+	fmt.Printf(fs, pars...)
+}
+
+// AllPrintf does fmt.Printf on all nodes, with node rank printed first
+// This is best for debugging MPI itself.
+func AllPrintf(fs string, pars ...interface{}) {
+	fs = fmt.Sprintf("P%d: ", WorldRank()) + fs
 	fmt.Printf(fs, pars...)
 }
