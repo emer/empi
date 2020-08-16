@@ -11,7 +11,6 @@ import (
 
 	"github.com/emer/emergent/env"
 	"github.com/emer/emergent/erand"
-	"github.com/emer/empi/mpi"
 	"github.com/emer/etable/etable"
 	"github.com/emer/etable/etensor"
 )
@@ -81,13 +80,7 @@ func (ft *FixedTable) NewOrder() {
 	ft.Order = rand.Perm(np) // always start with new one so random order is identical
 	// and always maintain Order so random number usage is same regardless, and if
 	// user switches between Sequential and random at any point, it all works..
-	nproc := mpi.WorldSize()
-	pt := np / nproc
-	if np%nproc != 0 {
-		log.Printf("mpi.FixedTable: number of table rows: %d is not an even multiple of number of MPI procs: %d -- must be!\n", np, nproc)
-	}
-	ft.TrialSt = pt * mpi.WorldRank()
-	ft.TrialEd = ft.TrialSt + pt
+	ft.TrialSt, ft.TrialEd, _ = AllocN(np)
 	ft.Trial.Max = ft.TrialEd
 }
 
