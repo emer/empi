@@ -108,6 +108,9 @@ func GatherTensorRowsString(dest, src *etensor.String, comm *mpi.Comm) error {
 	for _, l := range dln {
 		mxlen = ints.MaxInt(mxlen, l)
 	}
+	if mxlen == 0 {
+		return nil // nothing to transfer
+	}
 	sdt := make([]byte, ssz*mxlen)
 	ddt := make([]byte, dsz*mxlen)
 	idx := 0
