@@ -55,7 +55,12 @@ const (
 	OpSum Op = iota
 	OpMax
 	OpMin
-	OpProd
+	OpProd // Product
+	OpLAND // logical AND
+	OpLOR  // logical OR
+	OpBAND // bitwise AND
+	OpBOR  // bitwise OR
+
 )
 
 func (op Op) ToC() C.MPI_Op {
@@ -68,6 +73,14 @@ func (op Op) ToC() C.MPI_Op {
 		return C.MPI_MIN
 	case OpProd:
 		return C.MPI_PROD
+	case OpLAND:
+		return C.MPI_LAND
+	case OpLOR:
+		return C.MPI_LOR
+	case OpBAND:
+		return C.MPI_BAND
+	case OpBOR:
+		return C.MPI_BOR
 	}
 	return C.MPI_SUM
 }

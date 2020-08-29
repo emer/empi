@@ -129,3 +129,70 @@ func GatherTensorRowsString(dest, src *etensor.String, comm *mpi.Comm) error {
 	}
 	return err
 }
+
+// ReduceTensor does an MPI AllReduce on given src tensor data, using given operation,
+// gathering into dest.  dest must have same overall shape as src -- will be enforced.
+// each processor must have the same shape and organization for this to make sense.
+// does nothing for strings.
+func ReduceTensor(dest, src etensor.Tensor, comm *mpi.Comm, op mpi.Op) error {
+	dt := src.DataType()
+	if dt == etensor.STRING {
+		return nil
+	}
+	slen := src.Len()
+	if slen != dest.Len() {
+		dest.CopyShapeFrom(src)
+	}
+	var err error
+	switch dt {
+	case etensor.BOOL:
+		dt := dest.(*etensor.Bits)
+		st := src.(*etensor.Bits)
+		err = comm.AllReduceU8(op, dt.Values, st.Values)
+	case etensor.UINT8:
+		dt := dest.(*etensor.Uint8)
+		st := src.(*etensor.Uint8)
+		err = comm.AllReduceU8(op, dt.Values, st.Values)
+	case etensor.INT8:
+		dt := dest.(*etensor.Int8)
+		st := src.(*etensor.Int8)
+		err = comm.AllReduceI8(op, dt.Values, st.Values)
+	case etensor.UINT16:
+		dt := dest.(*etensor.Uint16)
+		st := src.(*etensor.Uint16)
+		err = comm.AllReduceU16(op, dt.Values, st.Values)
+	case etensor.INT16:
+		dt := dest.(*etensor.Int16)
+		st := src.(*etensor.Int16)
+		err = comm.AllReduceI16(op, dt.Values, st.Values)
+	case etensor.UINT32:
+		dt := dest.(*etensor.Uint32)
+		st := src.(*etensor.Uint32)
+		err = comm.AllReduceU32(op, dt.Values, st.Values)
+	case etensor.INT32:
+		dt := dest.(*etensor.Int32)
+		st := src.(*etensor.Int32)
+		err = comm.AllReduceI32(op, dt.Values, st.Values)
+	case etensor.UINT64:
+		dt := dest.(*etensor.Uint64)
+		st := src.(*etensor.Uint64)
+		err = comm.AllReduceU64(op, dt.Values, st.Values)
+	case etensor.INT64:
+		dt := dest.(*etensor.Int64)
+		st := src.(*etensor.Int64)
+		err = comm.AllReduceI64(op, dt.Values, st.Values)
+	case etensor.INT:
+		dt := dest.(*etensor.Int)
+		st := src.(*etensor.Int)
+		err = comm.AllReduceInt(op, dt.Values, st.Values)
+	case etensor.FLOAT32:
+		dt := dest.(*etensor.Float32)
+		st := src.(*etensor.Float32)
+		err = comm.AllReduceF32(op, dt.Values, st.Values)
+	case etensor.FLOAT64:
+		dt := dest.(*etensor.Float64)
+		st := src.(*etensor.Float64)
+		err = comm.AllReduceF64(op, dt.Values, st.Values)
+	}
+	return err
+}

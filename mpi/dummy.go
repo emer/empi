@@ -20,7 +20,12 @@ const (
 	OpMax
 	OpMin
 	OpProd
+	OpLAND // logical AND
+	OpLOR  // logical OR
+	OpBAND // bitwise AND
+	OpBOR  // bitwise OR
 )
+
 const (
 	// Root is the rank 0 node -- it is more semantic to use this
 	Root int = 0
