@@ -3,8 +3,8 @@
 package empi
 
 const (
-	Version     = "v1.0.9"
-	GitCommit   = "b160a03" // the commit JUST BEFORE the release
-	VersionDate = "2020-11-22 11:49" // UTC
+	Version     = "v1.0.10"
+	GitCommit   = "54c885c" // the commit JUST BEFORE the release
+	VersionDate = "2021-04-29 10:43" // UTC
 )
 
