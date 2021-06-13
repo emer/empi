@@ -7,7 +7,6 @@ package empi
 import (
 	"errors"
 	"fmt"
-	"log"
 	"math/rand"
 
 	"github.com/emer/empi/mpi"
@@ -33,7 +32,7 @@ func RandCheck(comm *mpi.Comm) error {
 	}
 	if errs != "" {
 		err = errors.New("empi.RandCheck: random numbers differ in procs: " + errs)
-		log.Println(err)
+		mpi.Printf("%s\n", err)
 	}
 	return err
 }
