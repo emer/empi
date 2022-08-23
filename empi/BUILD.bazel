@@ -1,0 +1,24 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "empi",
+    srcs = [
+        "alloc.go",
+        "doc.go",
+        "fixed.go",
+        "randcheck.go",
+        "table.go",
+        "tensor.go",
+        "version.go",
+    ],
+    importpath = "github.com/emer/empi/empi",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//mpi",
+        "@com_github_emer_emergent//env",
+        "@com_github_emer_emergent//erand",
+        "@com_github_emer_etable//etable",
+        "@com_github_emer_etable//etensor",
+        "@com_github_goki_ki//ints",
+    ],
+)
