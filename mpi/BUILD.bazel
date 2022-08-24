@@ -1,0 +1,14 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "mpi",
+    srcs = [
+        "doc.go",
+        "dummy.gen.go",
+        "dummy.go",
+        "printf.go",
+    ],
+    cgo = True,
+    importpath = "github.com/emer/empi/mpi",
+    visibility = ["//visibility:public"],
+)

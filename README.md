@@ -18,3 +18,14 @@ The `empi/empi` package has methods to support use of MPI in emergent simulation
 * A version of env.FixedTable that divides rows of table across MPI processors.
 
 
+## Bazel
+
+After adding any new files or imports, please update the Bazel files automatically with:
+
+```sh
+# Updates BUILD.bazel files
+bazel run //:gazelle
+# Updates external repos in WORKSPACE.bazel
+bazel run //:gazelle -- update-repos -from_file=go.mod
+bazel test //...
+```
