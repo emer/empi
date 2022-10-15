@@ -132,6 +132,7 @@ func GatherTensorRowsString(dest, src *etensor.String, comm *mpi.Comm) error {
 
 // ReduceTensor does an MPI AllReduce on given src tensor data, using given operation,
 // gathering into dest.  dest must have same overall shape as src -- will be enforced.
+// IMPORTANT: src and dest must be different slices!
 // each processor must have the same shape and organization for this to make sense.
 // does nothing for strings.
 func ReduceTensor(dest, src etensor.Tensor, comm *mpi.Comm, op mpi.Op) error {

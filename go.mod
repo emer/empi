@@ -3,8 +3,7 @@ module github.com/emer/empi
 go 1.18
 
 require (
-	github.com/emer/emergent v1.3.19
-	github.com/emer/etable v1.1.8
+	github.com/emer/etable v1.1.11
 	github.com/goki/ki v1.1.8
 )
 
