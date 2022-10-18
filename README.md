@@ -24,8 +24,8 @@ After adding any new files or imports, please update the Bazel files automatical
 
 ```sh
 # Updates BUILD.bazel files
-bazel run //:gazelle
+bazel run //:gazelle -- empi
 # Updates external repos in WORKSPACE.bazel
 bazel run //:gazelle -- update-repos -from_file=go.mod
-bazel test //...
+bazel build //...
 ```
