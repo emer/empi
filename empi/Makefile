@@ -9,19 +9,19 @@ GOGET=$(GOCMD) get
 
 all: build
 
-build: 
+build:
 	$(GOBUILD) -v
-test: 
+test:
 	$(GOTEST) -v ./...
-clean: 
+clean:
 	$(GOCLEAN)
-	
+
 # NOTE: MUST update version number here prior to running 'make release'
-VERS=v1.0.15
+VERS=v1.0.16
 PACKAGE=empi
 GIT_COMMIT=`git rev-parse --short HEAD`
 VERS_DATE=`date -u +%Y-%m-%d\ %H:%M`
-VERS_FILE=version.go
+VERS_FILE=$(shell echo `git rev-parse --show-toplevel`/version.go)
 
 release:
 	/bin/rm -f $(VERS_FILE)
@@ -36,7 +36,7 @@ release:
 	@echo ")" >> $(VERS_FILE)
 	@echo "" >> $(VERS_FILE)
 	/bin/cat $(VERS_FILE)
-	git commit -am "$(VERS) release -- $(VERS_FILE) updated"
+	git commit -am "$(VERS) release -- version.go updated"
 	git tag -a $(VERS) -m "$(VERS) release"
 	git push
 	git push origin --tags
