@@ -1,3 +1,4 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
 load("@bazel_gazelle//:def.bzl", "gazelle", "gazelle_binary")
 
 gazelle_binary(
@@ -12,4 +13,11 @@ gazelle_binary(
 gazelle(
     name = "gazelle",
     gazelle = ":gazelle_binary",
+)
+
+go_library(
+    name = "empi",
+    srcs = ["doc.go"],
+    importpath = "github.com/emer/empi",
+    visibility = ["//visibility:public"],
 )

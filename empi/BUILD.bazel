@@ -5,7 +5,6 @@ go_library(
     srcs = [
         "alloc.go",
         "doc.go",
-        "fixed.go",
         "randcheck.go",
         "table.go",
         "tensor.go",
@@ -15,8 +14,6 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//mpi",
-        "@com_github_emer_emergent//env",
-        "@com_github_emer_emergent//erand",
         "@com_github_emer_etable//etable",
         "@com_github_emer_etable//etensor",
         "@com_github_goki_ki//ints",
