@@ -16,3 +16,12 @@ The `empi/empi` package has methods to support use of MPI in emergent simulation
 * Gathering `etable.Table` and `etensor.Tensor` data across processors.
 
 * A version of env.FixedTable that divides rows of table across MPI processors.
+
+## Development
+
+After updating any of the template files, you need to update the generated go files like so:
+```bash
+cd mpi
+go install github.com/apache/arrow/go/arrow/_tools/tmpl
+go generate
+```
