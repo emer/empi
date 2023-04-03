@@ -23,5 +23,5 @@ After updating any of the template files, you need to update the generated go fi
 ```bash
 cd mpi
 go install github.com/apache/arrow/go/arrow/_tools/tmpl
-go generate
+make generate
 ```

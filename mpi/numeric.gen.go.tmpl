@@ -59,8 +59,9 @@ func (cm *Comm) Bcast{{.Name}}(fmProc int, vals []{{or .Type}}) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) Reduce{{.Name}}(toProc int, op Op, dest, orig []{{or .Type}}) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.{{or .CType}}, op.ToC(), C.int(toProc), cm.comm), "Reduce{{.Name}}")
 }
@@ -79,8 +80,9 @@ func (cm *Comm) AllReduce{{.Name}}(op Op, dest, orig []{{or .Type}}) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) Gather{{.Name}}(toProc int, dest, orig []{{or .Type}}) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.{{or .CType}}, recvbuf, C.int(len(orig)), C.{{or .CType}}, C.int(toProc), cm.comm), "Gather{{.Name}}")
 }
@@ -99,8 +101,9 @@ func (cm *Comm) AllGather{{.Name}}(dest, orig []{{or .Type}}) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) Scatter{{.Name}}(fmProc int, dest, orig []{{or .Type}}) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.{{or .CType}}, recvbuf, C.int(len(dest)), C.{{or .CType}}, C.int(fmProc), cm.comm), "Gather{{.Name}}")

@@ -57,8 +57,9 @@ func (cm *Comm) BcastF64(fmProc int, vals []float64) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceF64(toProc int, op Op, dest, orig []float64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT64, op.ToC(), C.int(toProc), cm.comm), "ReduceF64")
 }
@@ -77,8 +78,9 @@ func (cm *Comm) AllReduceF64(op Op, dest, orig []float64) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherF64(toProc int, dest, orig []float64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.FLOAT64, recvbuf, C.int(len(orig)), C.FLOAT64, C.int(toProc), cm.comm), "GatherF64")
 }
@@ -97,8 +99,9 @@ func (cm *Comm) AllGatherF64(dest, orig []float64) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterF64(fmProc int, dest, orig []float64) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.FLOAT64, recvbuf, C.int(len(dest)), C.FLOAT64, C.int(fmProc), cm.comm), "GatherF64")
@@ -130,8 +133,9 @@ func (cm *Comm) BcastF32(fmProc int, vals []float32) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceF32(toProc int, op Op, dest, orig []float32) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT32, op.ToC(), C.int(toProc), cm.comm), "ReduceF32")
 }
@@ -150,8 +154,9 @@ func (cm *Comm) AllReduceF32(op Op, dest, orig []float32) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherF32(toProc int, dest, orig []float32) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.FLOAT32, recvbuf, C.int(len(orig)), C.FLOAT32, C.int(toProc), cm.comm), "GatherF32")
 }
@@ -170,8 +175,9 @@ func (cm *Comm) AllGatherF32(dest, orig []float32) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterF32(fmProc int, dest, orig []float32) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.FLOAT32, recvbuf, C.int(len(dest)), C.FLOAT32, C.int(fmProc), cm.comm), "GatherF32")
@@ -203,8 +209,9 @@ func (cm *Comm) BcastInt(fmProc int, vals []int) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceInt(toProc int, op Op, dest, orig []int) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), C.int(toProc), cm.comm), "ReduceInt")
 }
@@ -223,8 +230,9 @@ func (cm *Comm) AllReduceInt(op Op, dest, orig []int) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherInt(toProc int, dest, orig []int) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT64, recvbuf, C.int(len(orig)), C.INT64, C.int(toProc), cm.comm), "GatherInt")
 }
@@ -243,8 +251,9 @@ func (cm *Comm) AllGatherInt(dest, orig []int) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterInt(fmProc int, dest, orig []int) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT64, recvbuf, C.int(len(dest)), C.INT64, C.int(fmProc), cm.comm), "GatherInt")
@@ -276,8 +285,9 @@ func (cm *Comm) BcastI64(fmProc int, vals []int64) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), C.int(toProc), cm.comm), "ReduceI64")
 }
@@ -296,8 +306,9 @@ func (cm *Comm) AllReduceI64(op Op, dest, orig []int64) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherI64(toProc int, dest, orig []int64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT64, recvbuf, C.int(len(orig)), C.INT64, C.int(toProc), cm.comm), "GatherI64")
 }
@@ -316,8 +327,9 @@ func (cm *Comm) AllGatherI64(dest, orig []int64) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterI64(fmProc int, dest, orig []int64) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT64, recvbuf, C.int(len(dest)), C.INT64, C.int(fmProc), cm.comm), "GatherI64")
@@ -349,8 +361,9 @@ func (cm *Comm) BcastU64(fmProc int, vals []uint64) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceU64(toProc int, op Op, dest, orig []uint64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT64, op.ToC(), C.int(toProc), cm.comm), "ReduceU64")
 }
@@ -369,8 +382,9 @@ func (cm *Comm) AllReduceU64(op Op, dest, orig []uint64) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherU64(toProc int, dest, orig []uint64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.UINT64, recvbuf, C.int(len(orig)), C.UINT64, C.int(toProc), cm.comm), "GatherU64")
 }
@@ -389,8 +403,9 @@ func (cm *Comm) AllGatherU64(dest, orig []uint64) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterU64(fmProc int, dest, orig []uint64) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.UINT64, recvbuf, C.int(len(dest)), C.UINT64, C.int(fmProc), cm.comm), "GatherU64")
@@ -422,8 +437,9 @@ func (cm *Comm) BcastI32(fmProc int, vals []int32) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceI32(toProc int, op Op, dest, orig []int32) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.INT32, op.ToC(), C.int(toProc), cm.comm), "ReduceI32")
 }
@@ -442,8 +458,9 @@ func (cm *Comm) AllReduceI32(op Op, dest, orig []int32) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherI32(toProc int, dest, orig []int32) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT32, recvbuf, C.int(len(orig)), C.INT32, C.int(toProc), cm.comm), "GatherI32")
 }
@@ -462,8 +479,9 @@ func (cm *Comm) AllGatherI32(dest, orig []int32) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterI32(fmProc int, dest, orig []int32) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT32, recvbuf, C.int(len(dest)), C.INT32, C.int(fmProc), cm.comm), "GatherI32")
@@ -495,8 +513,9 @@ func (cm *Comm) BcastU32(fmProc int, vals []uint32) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceU32(toProc int, op Op, dest, orig []uint32) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT32, op.ToC(), C.int(toProc), cm.comm), "ReduceU32")
 }
@@ -515,8 +534,9 @@ func (cm *Comm) AllReduceU32(op Op, dest, orig []uint32) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherU32(toProc int, dest, orig []uint32) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.UINT32, recvbuf, C.int(len(orig)), C.UINT32, C.int(toProc), cm.comm), "GatherU32")
 }
@@ -535,8 +555,9 @@ func (cm *Comm) AllGatherU32(dest, orig []uint32) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterU32(fmProc int, dest, orig []uint32) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.UINT32, recvbuf, C.int(len(dest)), C.UINT32, C.int(fmProc), cm.comm), "GatherU32")
@@ -568,8 +589,9 @@ func (cm *Comm) BcastI16(fmProc int, vals []int16) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceI16(toProc int, op Op, dest, orig []int16) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.INT16, op.ToC(), C.int(toProc), cm.comm), "ReduceI16")
 }
@@ -588,8 +610,9 @@ func (cm *Comm) AllReduceI16(op Op, dest, orig []int16) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherI16(toProc int, dest, orig []int16) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.INT16, recvbuf, C.int(len(orig)), C.INT16, C.int(toProc), cm.comm), "GatherI16")
 }
@@ -608,8 +631,9 @@ func (cm *Comm) AllGatherI16(dest, orig []int16) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterI16(fmProc int, dest, orig []int16) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.INT16, recvbuf, C.int(len(dest)), C.INT16, C.int(fmProc), cm.comm), "GatherI16")
@@ -641,8 +665,9 @@ func (cm *Comm) BcastU16(fmProc int, vals []uint16) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceU16(toProc int, op Op, dest, orig []uint16) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT16, op.ToC(), C.int(toProc), cm.comm), "ReduceU16")
 }
@@ -661,8 +686,9 @@ func (cm *Comm) AllReduceU16(op Op, dest, orig []uint16) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherU16(toProc int, dest, orig []uint16) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.UINT16, recvbuf, C.int(len(orig)), C.UINT16, C.int(toProc), cm.comm), "GatherU16")
 }
@@ -681,8 +707,9 @@ func (cm *Comm) AllGatherU16(dest, orig []uint16) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterU16(fmProc int, dest, orig []uint16) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.UINT16, recvbuf, C.int(len(dest)), C.UINT16, C.int(fmProc), cm.comm), "GatherU16")
@@ -714,8 +741,9 @@ func (cm *Comm) BcastI8(fmProc int, vals []int8) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceI8(toProc int, op Op, dest, orig []int8) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), C.int(toProc), cm.comm), "ReduceI8")
 }
@@ -734,8 +762,9 @@ func (cm *Comm) AllReduceI8(op Op, dest, orig []int8) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherI8(toProc int, dest, orig []int8) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.BYTE, recvbuf, C.int(len(orig)), C.BYTE, C.int(toProc), cm.comm), "GatherI8")
 }
@@ -754,8 +783,9 @@ func (cm *Comm) AllGatherI8(dest, orig []int8) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterI8(fmProc int, dest, orig []int8) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.BYTE, recvbuf, C.int(len(dest)), C.BYTE, C.int(fmProc), cm.comm), "GatherI8")
@@ -787,8 +817,9 @@ func (cm *Comm) BcastU8(fmProc int, vals []uint8) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceU8(toProc int, op Op, dest, orig []uint8) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), C.int(toProc), cm.comm), "ReduceU8")
 }
@@ -807,8 +838,9 @@ func (cm *Comm) AllReduceU8(op Op, dest, orig []uint8) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherU8(toProc int, dest, orig []uint8) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.BYTE, recvbuf, C.int(len(orig)), C.BYTE, C.int(toProc), cm.comm), "GatherU8")
 }
@@ -827,8 +859,9 @@ func (cm *Comm) AllGatherU8(dest, orig []uint8) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterU8(fmProc int, dest, orig []uint8) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.BYTE, recvbuf, C.int(len(dest)), C.BYTE, C.int(fmProc), cm.comm), "GatherU8")
@@ -860,8 +893,9 @@ func (cm *Comm) BcastC128(fmProc int, vals []complex128) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceC128(toProc int, op Op, dest, orig []complex128) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX128, op.ToC(), C.int(toProc), cm.comm), "ReduceC128")
 }
@@ -880,8 +914,9 @@ func (cm *Comm) AllReduceC128(op Op, dest, orig []complex128) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherC128(toProc int, dest, orig []complex128) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.COMPLEX128, recvbuf, C.int(len(orig)), C.COMPLEX128, C.int(toProc), cm.comm), "GatherC128")
 }
@@ -900,8 +935,9 @@ func (cm *Comm) AllGatherC128(dest, orig []complex128) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterC128(fmProc int, dest, orig []complex128) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.COMPLEX128, recvbuf, C.int(len(dest)), C.COMPLEX128, C.int(fmProc), cm.comm), "GatherC128")
@@ -933,8 +969,9 @@ func (cm *Comm) BcastC64(fmProc int, vals []complex64) error {
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ReduceC64(toProc int, op Op, dest, orig []complex64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Reduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX64, op.ToC(), C.int(toProc), cm.comm), "ReduceC64")
 }
@@ -953,8 +990,9 @@ func (cm *Comm) AllReduceC64(op Op, dest, orig []complex64) error {
 // IMPORTANT: orig and dest must be different slices.
 func (cm *Comm) GatherC64(toProc int, dest, orig []complex64) error {
 	sendbuf := unsafe.Pointer(&orig[0])
-	if recvbuf != nil {
-		recvbuf := unsafe.Pointer(&dest[0])
+	var recvbuf unsafe.Pointer
+	if dest != nil {
+		recvbuf = unsafe.Pointer(&dest[0])
 	}
 	return Error(C.MPI_Gather(sendbuf, C.int(len(orig)), C.COMPLEX64, recvbuf, C.int(len(orig)), C.COMPLEX64, C.int(toProc), cm.comm), "GatherC64")
 }
@@ -973,8 +1011,9 @@ func (cm *Comm) AllGatherC64(dest, orig []complex64) error {
 // sendbuf is ignored on all procs except fmProc.
 // IMPORTANT: orig and dest must be different slices
 func (cm *Comm) ScatterC64(fmProc int, dest, orig []complex64) error {
-	if sendbuf != nil {
-		sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
 	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Scatter(sendbuf, C.int(len(dest)), C.COMPLEX64, recvbuf, C.int(len(dest)), C.COMPLEX64, C.int(fmProc), cm.comm), "GatherC64")
