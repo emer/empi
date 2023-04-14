@@ -66,8 +66,14 @@ func (cm *Comm) ReduceF64(toProc int, op Op, dest, orig []float64) error {
 
 // AllReduceF64 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceF64(op Op, dest, orig []float64) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT64, op.ToC(), cm.comm), "AllReduceF64")
 }
@@ -142,8 +148,14 @@ func (cm *Comm) ReduceF32(toProc int, op Op, dest, orig []float32) error {
 
 // AllReduceF32 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceF32(op Op, dest, orig []float32) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.FLOAT32, op.ToC(), cm.comm), "AllReduceF32")
 }
@@ -218,8 +230,14 @@ func (cm *Comm) ReduceInt(toProc int, op Op, dest, orig []int) error {
 
 // AllReduceInt reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceInt(op Op, dest, orig []int) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), cm.comm), "AllReduceInt")
 }
@@ -294,8 +312,14 @@ func (cm *Comm) ReduceI64(toProc int, op Op, dest, orig []int64) error {
 
 // AllReduceI64 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceI64(op Op, dest, orig []int64) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT64, op.ToC(), cm.comm), "AllReduceI64")
 }
@@ -370,8 +394,14 @@ func (cm *Comm) ReduceU64(toProc int, op Op, dest, orig []uint64) error {
 
 // AllReduceU64 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceU64(op Op, dest, orig []uint64) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT64, op.ToC(), cm.comm), "AllReduceU64")
 }
@@ -446,8 +476,14 @@ func (cm *Comm) ReduceI32(toProc int, op Op, dest, orig []int32) error {
 
 // AllReduceI32 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceI32(op Op, dest, orig []int32) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT32, op.ToC(), cm.comm), "AllReduceI32")
 }
@@ -522,8 +558,14 @@ func (cm *Comm) ReduceU32(toProc int, op Op, dest, orig []uint32) error {
 
 // AllReduceU32 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceU32(op Op, dest, orig []uint32) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT32, op.ToC(), cm.comm), "AllReduceU32")
 }
@@ -598,8 +640,14 @@ func (cm *Comm) ReduceI16(toProc int, op Op, dest, orig []int16) error {
 
 // AllReduceI16 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceI16(op Op, dest, orig []int16) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.INT16, op.ToC(), cm.comm), "AllReduceI16")
 }
@@ -674,8 +722,14 @@ func (cm *Comm) ReduceU16(toProc int, op Op, dest, orig []uint16) error {
 
 // AllReduceU16 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceU16(op Op, dest, orig []uint16) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.UINT16, op.ToC(), cm.comm), "AllReduceU16")
 }
@@ -750,8 +804,14 @@ func (cm *Comm) ReduceI8(toProc int, op Op, dest, orig []int8) error {
 
 // AllReduceI8 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceI8(op Op, dest, orig []int8) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), cm.comm), "AllReduceI8")
 }
@@ -826,8 +886,14 @@ func (cm *Comm) ReduceU8(toProc int, op Op, dest, orig []uint8) error {
 
 // AllReduceU8 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceU8(op Op, dest, orig []uint8) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.BYTE, op.ToC(), cm.comm), "AllReduceU8")
 }
@@ -902,8 +968,14 @@ func (cm *Comm) ReduceC128(toProc int, op Op, dest, orig []complex128) error {
 
 // AllReduceC128 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceC128(op Op, dest, orig []complex128) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX128, op.ToC(), cm.comm), "AllReduceC128")
 }
@@ -978,8 +1050,14 @@ func (cm *Comm) ReduceC64(toProc int, op Op, dest, orig []complex64) error {
 
 // AllReduceC64 reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduceC64(op Op, dest, orig []complex64) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.COMPLEX64, op.ToC(), cm.comm), "AllReduceC64")
 }
