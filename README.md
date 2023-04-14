@@ -15,7 +15,7 @@ The `empi/empi` package has methods to support use of MPI in emergent simulation
 
 * Gathering `etable.Table` and `etensor.Tensor` data across processors.
 
-* A version of env.FixedTable that divides rows of table across MPI processors.
+* `AllocN` allocates n items to process across mpi processors.
 
 ## Development
 
