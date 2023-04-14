@@ -21,7 +21,7 @@ VERS=v1.0.20
 PACKAGE=empi
 GIT_COMMIT=`git rev-parse --short HEAD`
 VERS_DATE=`date -u +%Y-%m-%d\ %H:%M`
-VERS_FILE=$(shell echo `git rev-parse --show-toplevel`/version.go)
+VERS_FILE=version.go
 
 release:
 	/bin/rm -f $(VERS_FILE)
