@@ -68,8 +68,14 @@ func (cm *Comm) Reduce{{.Name}}(toProc int, op Op, dest, orig []{{or .Type}}) er
 
 // AllReduce{{.Name}} reduces all values across procs to all procs from orig into dest using given operation.
 // IMPORTANT: orig and dest must be different slices
+// To do an in-place operation, set orig to nil
 func (cm *Comm) AllReduce{{.Name}}(op Op, dest, orig []{{or .Type}}) error {
-	sendbuf := unsafe.Pointer(&orig[0])
+	var sendbuf unsafe.Pointer
+	if orig != nil {
+		sendbuf = unsafe.Pointer(&orig[0])
+	} else {
+		sendbuf = C.MPI_IN_PLACE
+	}
 	recvbuf := unsafe.Pointer(&dest[0])
 	return Error(C.MPI_Allreduce(sendbuf, recvbuf, C.int(len(dest)), C.{{or .CType}}, op.ToC(), cm.comm), "AllReduce{{.Name}}")
 }
