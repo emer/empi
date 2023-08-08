@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+//go:build !mpi
 // +build !mpi
 
 package mpi
@@ -32,7 +33,8 @@ const (
 )
 
 // IsOn tells whether MPI is on or not
-//  NOTE: this returns true even after Stop
+//
+//	NOTE: this returns true even after Stop
 func IsOn() bool {
 	return false
 }
