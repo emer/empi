@@ -1,5 +1,7 @@
 # eMPI: Message Passing Interface
 
+This is version v1.
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/emer/empi)](https://goreportcard.com/report/github.com/emer/empi)
 [![GoDoc](https://godoc.org/github.com/emer/emergent?status.svg)](https://godoc.org/github.com/emer/empi)
 
