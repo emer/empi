@@ -6,7 +6,6 @@ package empi
 
 import (
 	"github.com/emer/empi/v2/mpi"
-	"github.com/goki/ki/ints"
 	"goki.dev/etable/v2/etensor"
 )
 
@@ -106,7 +105,7 @@ func GatherTensorRowsString(dest, src *etensor.String, comm *mpi.Comm) error {
 	}
 	mxlen := 0
 	for _, l := range dln {
-		mxlen = ints.MaxInt(mxlen, l)
+		mxlen = max(mxlen, l)
 	}
 	if mxlen == 0 {
 		return nil // nothing to transfer

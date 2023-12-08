@@ -1,11 +1,8 @@
 module github.com/emer/empi/v2
 
-go 1.18
+go 1.21.0
 
-require (
-	github.com/emer/etable v1.1.21
-	github.com/goki/ki v1.1.11
-)
+require goki.dev/etable/v2 v2.0.0-dev0.0.2
 
 require (
 	github.com/BurntSushi/freetype-go v0.0.0-20160129220410-b763ddbfe298 // indirect
@@ -23,12 +20,13 @@ require (
 	github.com/go-gl/glfw/v3.3/glfw v0.0.0-20221017161538-93cebf72946b // indirect
 	github.com/go-gl/mathgl v1.0.0 // indirect
 	github.com/goki/freetype v1.0.1 // indirect
-	github.com/goki/gi v1.3.17 // indirect
+	github.com/goki/gi v1.3.19 // indirect
+	github.com/goki/ki v1.1.11 // indirect
 	github.com/goki/kigen v1.0.2 // indirect
 	github.com/goki/mat32 v1.0.15 // indirect
 	github.com/goki/pi v1.0.27 // indirect
 	github.com/goki/prof v1.0.0 // indirect
-	github.com/goki/vgpu v1.0.22 // indirect
+	github.com/goki/vgpu v1.0.27 // indirect
 	github.com/goki/vulkan v1.0.6 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect

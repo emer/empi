@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/emer/empi/mpi"
+	"github.com/emer/empi/v2/mpi"
 )
 
 // RandCheck checks that the current random numbers generated across each
