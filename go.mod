@@ -1,4 +1,4 @@
-module github.com/emer/empi
+module github.com/emer/empi/v2
 
 go 1.18
 

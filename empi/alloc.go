@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/emer/empi/mpi"
+	"github.com/emer/empi/v2/mpi"
 )
 
 // Alloc allocates n items to current mpi proc based on WorldSize and WorldRank.

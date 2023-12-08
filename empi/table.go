@@ -5,8 +5,8 @@
 package empi
 
 import (
-	"github.com/emer/empi/mpi"
-	"github.com/emer/etable/etable"
+	"github.com/emer/empi/v2/mpi"
+	"goki.dev/etable/v2/etable"
 )
 
 // GatherTableRows does an MPI AllGather on given src table data, gathering into dest.

@@ -5,9 +5,9 @@
 package empi
 
 import (
-	"github.com/emer/empi/mpi"
-	"github.com/emer/etable/etensor"
+	"github.com/emer/empi/v2/mpi"
 	"github.com/goki/ki/ints"
+	"goki.dev/etable/v2/etensor"
 )
 
 // GatherTensorRows does an MPI AllGather on given src tensor data, gathering into dest,
