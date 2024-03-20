@@ -1,9 +1,0 @@
-ID = 'com.emer.empi.v2'
-Name = 'empi'
-Type = 'Library'
-Version = 'v2.0.0-dev0.0.4'
-
-[Release]
-  Package = 'empi'
-  VersionFile = 'empi/version.go'
-
